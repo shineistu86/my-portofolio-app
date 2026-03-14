@@ -238,14 +238,11 @@ function Home() {
               >
                 <FaGithub size={24} className="text-white" />
               </a>
-              <a
-                href="https://www.linkedin.com/in/hisyam-eka-pramudita-0a1667248/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-14 h-14 bg-gray-800 hover:bg-blue-600 rounded-full transition-all transform hover:scale-110"
+              <div
+                className="flex items-center justify-center w-14 h-14 bg-gray-800 hover:bg-blue-600 rounded-full transition-all transform hover:scale-110 cursor-default"
               >
                 <FaLinkedin size={24} className="text-white" />
-              </a>
+              </div>
               <a
                 href="https://www.instagram.com/isaac.tangiss/"
                 target="_blank"

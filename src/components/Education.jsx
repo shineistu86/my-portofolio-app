@@ -7,7 +7,7 @@ function Education() {
     {
       institution: 'Institut Teknologi Garut',
       degree: 'Bachelor in Information Systems',
-      period: '2023 – Sekarang',
+      period: '2023 – Present',
       grade: 'Current Student',
       description: 'Studying Information Systems with focus on data analysis and data visualization.',
     },
@@ -29,7 +29,7 @@ function Education() {
           My Education
         </h2>
         <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-          My academic background and qualifications
+          My Education and Experience
         </p>
 
         <div className="space-y-8">

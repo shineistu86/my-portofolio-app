@@ -2,7 +2,7 @@ export const portfolioData = {
   profile: {
     name: 'Hisyam Eka Pramudita',
     title: 'Information Systems Student & Junior Data Analyst',
-    description: 'Mahasiswa Information Systems yang tertarik pada bidang data analysis, data visualization. Memiliki pengalaman dalam eksplorasi data, analisis sentimen, serta pembuatan visualisasi menggunakan berbagai tools analisis data.',
+    description: 'Information Systems student interested in data analysis and data visualization. Experienced in data exploration, sentiment analysis, and creating visualizations using various data analysis tools.',
     email: 'syamjoj@gmail.com',
     location: 'Indonesia',
     languages: ['Indonesia (Native)', 'English (Intermediate)'],
@@ -11,7 +11,7 @@ export const portfolioData = {
     {
       institution: 'Institut Teknologi Garut',
       program: 'Information Systems',
-      year: '2023 – Sekarang',
+      year: '2023 – Present',
     },
   ],
   skills: {
@@ -65,28 +65,28 @@ export const portfolioData = {
   projects: [
     {
       name: 'Osamunime',
-      description: 'Aplikasi web untuk mencari dan mengelola daftar anime favorit pengguna.',
+      description: 'Web application to search and manage users\' favorite anime lists.',
       technologies: ['Laravel', 'MySQL', 'Tailwind CSS'],
       link: 'https://github.com/shineistu86/Osamunime-App.git',
       image: 'osamunime.png',
     },
     {
       name: 'NationNote',
-      description: 'Website yang menampilkan informasi negara di dunia dengan fitur pencarian dan filter wilayah.',
+      description: 'Website displaying country information worldwide with search and region filter features.',
       technologies: ['React', 'REST API'],
       link: 'https://nationnote-app.vercel.app',
       image: 'notion-note.png',
     },
     {
       name: 'DANA Sentiment Analysis',
-      description: 'Analisis ribuan ulasan pengguna aplikasi DANA untuk mengetahui sentimen dan tren keluhan pengguna.',
+      description: 'Analysis of thousands of DANA app user reviews to determine sentiment and user complaint trends.',
       technologies: ['Python', 'pandas', 'matplotlib'],
       link: 'https://dcn-visualization.streamlit.app/',
       image: 'overview-dana.png',
     },
     {
       name: 'Heating Oil Consumption Prediction',
-      description: 'Proyek data mining untuk memprediksi konsumsi minyak pemanas rumah tangga.',
+      description: 'Data mining project to predict household heating oil consumption.',
       technologies: ['RapidMiner', 'Data Mining'],
       link: 'https://github.com/shineistu86',
       image: 'heating-oil.png',
