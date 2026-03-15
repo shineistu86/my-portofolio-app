@@ -18,13 +18,13 @@ function DraggableIcon({ icon, name, alt, index, onReorder, totalIcons }) {
 
   // Icon positions in percentage for responsive orbiting layout
   const iconPositions = [
-    { left: '5%', top: '20%' },    // CSS - top left
-    { left: '-5%', top: '50%' },   // Python - middle left
-    { left: '10%', top: '75%' },   // React - bottom left
-    { left: '40%', top: '85%' },   // Tailwind - bottom center
-    { left: '70%', top: '75%' },   // HTML - bottom right
-    { left: '85%', top: '50%' },   // Streamlit - middle right
-    { left: '75%', top: '20%' },   // Excel - top right
+    { left: '5%', top: '50%' },      // CSS - left middle
+    { left: '15%', top: '80%' },     // Python - bottom left
+    { left: '45%', top: '92%' },     // React - bottom center
+    { left: '75%', top: '80%' },     // Tailwind - bottom right
+    { left: '88%', top: '50%' },     // HTML - right middle
+    { left: '75%', top: '8%' },      // Streamlit - top right
+    { left: '15%', top: '8%' },      // Excel - top left
   ]
 
   const position = iconPositions[index]
@@ -316,8 +316,12 @@ function Home() {
           padding: 12px;
           border-radius: 16px;
           border: 2px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 20px rgba(59, 130, 246, 0.5);
           animation: bounce 2s ease-in-out infinite;
+        }
+
+        .tech-icon:hover {
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(59, 130, 246, 0.8);
         }
 
         @media (max-width: 768px) {

@@ -16,7 +16,7 @@ function Navbar() {
     <nav className="fixed top-0 left-0 right-0 bg-gray-900/95 backdrop-blur-sm z-50 border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="text-xl font-bold text-blue-400">Portofolio</div>
+          <a href="#home" className="text-2xl font-extrabold text-blue-400 hover:text-blue-300 transition-colors tracking-wider" style={{ textShadow: '0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.5), 0 0 30px rgba(59, 130, 246, 0.3)' }}>HEP'S PORTO</a>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">

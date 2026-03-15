@@ -5,29 +5,37 @@ import heatingOil from '../assets/images/heating-oil.png'
 import osamunime from '../assets/images/osamunime.png'
 import notionNote from '../assets/images/notion-note.png'
 import overviewDana from '../assets/images/overview-dana.png'
+import darigarut from '../assets/images/darigarut.png'
+import dpr from '../assets/images/dpr.png'
 
-const filterCategories = ['ALL', 'DATA', 'WEB APP']
+const filterCategories = ['ALL', 'WEB APP', 'DATA', 'DESIGN']
 
 const projectImages = {
   'heating-oil.png': heatingOil,
   'osamunime.png': osamunime,
   'notion-note.png': notionNote,
   'overview-dana.png': overviewDana,
+  'darigarut.png': darigarut,
+  'dpr.png': dpr,
 }
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('ALL')
   const { projects } = portfolioData
 
-  const filteredProjects = activeFilter === 'ALL' 
-    ? projects 
+  const filteredProjects = activeFilter === 'ALL'
+    ? projects
     : projects.filter(project => {
         if (activeFilter === 'WEB APP') return project.technologies.some(t => t.includes('Laravel') || t.includes('React') || t.includes('Tailwind'))
         if (activeFilter === 'DATA') return project.technologies.some(t => t.includes('Python') || t.includes('pandas') || t.includes('RapidMiner'))
+        if (activeFilter === 'DESIGN') return project.technologies.some(t => t.includes('Figma'))
         return true
       })
 
   const getProjectType = (project) => {
+    if (project.technologies.some(t => t.includes('Figma'))) {
+      return 'Design'
+    }
     if (project.technologies.some(t => t.includes('Machine Learning') || t.includes('RapidMiner'))) {
       return 'Data Science'
     }
@@ -38,12 +46,9 @@ const Projects = () => {
   }
 
   const getProjectDetails = (project) => {
-    const isDataScience = project.technologies.some(t => t.includes('Machine Learning') || t.includes('RapidMiner'))
-    const isDataAnalysis = project.technologies.some(t => t.includes('Python') || t.includes('pandas'))
-    
     return {
-      date: '2024',
-      client: isDataScience || isDataAnalysis ? 'Research Project' : 'Personal Project',
+      date: project.year || '2024',
+      client: project.type === 'Team' ? 'Team Project' : 'Personal Project',
       tech: project.technologies.slice(0, 2),
       type: getProjectType(project),
     }

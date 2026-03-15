@@ -69,6 +69,7 @@ export const portfolioData = {
       technologies: ['Laravel', 'MySQL', 'Tailwind CSS'],
       link: 'https://github.com/shineistu86/Osamunime-App.git',
       image: 'osamunime.png',
+      year: '2026',
     },
     {
       name: 'NationNote',
@@ -76,6 +77,8 @@ export const portfolioData = {
       technologies: ['React', 'REST API'],
       link: 'https://nationnote-app.vercel.app',
       image: 'notion-note.png',
+      year: '2026',
+      type: 'Team',
     },
     {
       name: 'DANA Sentiment Analysis',
@@ -83,6 +86,8 @@ export const portfolioData = {
       technologies: ['Python', 'pandas', 'matplotlib'],
       link: 'https://dcn-visualization.streamlit.app/',
       image: 'overview-dana.png',
+      year: '2026',
+      type: 'Team',
     },
     {
       name: 'Heating Oil Consumption Prediction',
@@ -90,6 +95,26 @@ export const portfolioData = {
       technologies: ['RapidMiner', 'Data Mining'],
       link: 'https://github.com/shineistu86',
       image: 'heating-oil.png',
+      year: '2025',
+      type: 'Team',
+    },
+    {
+      name: 'DariGarut',
+      description: 'Designed a UI/UX prototype for DariGarut, an e-commerce platform to help promote and sell local products from Garut. The design focuses on a simple and user-friendly shopping experience with essential features like product browsing, cart, and checkout.',
+      technologies: ['Figma'],
+      link: 'https://www.figma.com/proto/V4T9lLKF2vSIl7pEqFEswX/Untitled?node-id=1-3&t=tFEefEZLkzXYptdY-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A3',
+      image: 'darigarut.png',
+      year: '2025',
+      type: 'Team',
+    },
+    {
+      name: 'DPR Twitter Sentiment Analysis',
+      description: 'Collected and analyzed Twitter (X) data related to public discussions about the Indonesian DPR (Dewan Perwakilan Rakyat) using Python. The project includes tweet crawling, text preprocessing, word cloud visualization, and emotion analysis to identify trending topics and public sentiment.',
+      technologies: ['Python', 'pandas', 'matplotlib', 'NLP'],
+      link: 'https://github.com/shineistu86',
+      image: 'dpr.png',
+      year: '2025',
+      type: 'Personal',
     },
   ],
   social: {

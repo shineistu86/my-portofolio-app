@@ -4,7 +4,7 @@ import htmlIcon from '../assets/images/html-icon.png'
 import cssIcon from '../assets/images/css-icon.png'
 import mysqlIcon from '../assets/images/mysql-icon.png'
 import rapidIcon from '../assets/images/rapid-icon.png'
-import powerbiIcon from '../assets/images/powerbi-icon.png'
+import streamlitIcon from '../assets/images/streamlit-icon.png'
 import lookerIcon from '../assets/images/looker-icon.png'
 import excelIcon from '../assets/images/excel-icon.png'
 import figmaIcon from '../assets/images/figma-icon.png'
@@ -20,7 +20,7 @@ function Skills() {
     { name: 'CSS', icon: cssIcon },
     { name: 'MySQL', icon: mysqlIcon },
     { name: 'Rapid\nMiner', icon: rapidIcon },
-    { name: 'Power BI', icon: powerbiIcon },
+    { name: 'Streamlit', icon: streamlitIcon },
     { name: 'Looker\nStudio', icon: lookerIcon },
     { name: 'Excel', icon: excelIcon },
     { name: 'Figma', icon: figmaIcon },
