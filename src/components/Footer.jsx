@@ -1,4 +1,4 @@
-import { FaGithub, FaLinkedin, FaInstagram, FaEnvelope } from 'react-icons/fa'
+import { FaGithub, FaInstagram, FaEnvelope } from 'react-icons/fa'
 import { portfolioData } from '../data/portfolioData'
 
 function Footer() {
@@ -15,14 +15,6 @@ function Footer() {
             className="text-gray-400 hover:text-white transition-colors"
           >
             <FaGithub size={24} />
-          </a>
-          <a
-            href={social.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-blue-500 transition-colors"
-          >
-            <FaLinkedin size={24} />
           </a>
           <a
             href={social.instagram}

@@ -25,7 +25,7 @@ export const portfolioData = {
       { name: 'RapidMiner', level: 75 },
       { name: 'Power BI', level: 80 },
       { name: 'Looker Studio', level: 75 },
-      { name: 'Excel', level: 85 },
+      { name: 'Colab', level: 85 },
     ],
     design: [
       { name: 'Figma', level: 70 },

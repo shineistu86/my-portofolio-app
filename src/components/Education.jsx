@@ -6,10 +6,10 @@ function Education() {
   const educationHistory = [
     {
       institution: 'Institut Teknologi Garut',
-      degree: 'Bachelor in Information Systems',
+      degree: 'Information Systems Student',
       period: '2023 – Present',
       grade: 'Current Student',
-      description: 'Studying Information Systems with focus on data analysis and data visualization.',
+      description: 'Studying Information Systems with a strong interest in Data Analytics and Business Intelligence.',
     },
   ]
 

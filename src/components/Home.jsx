@@ -5,9 +5,9 @@ import reactIcon from '../assets/images/react-icon.png'
 import htmlIcon from '../assets/images/html-icon.png'
 import cssIcon from '../assets/images/css-icon.png'
 import tailwindIcon from '../assets/images/tailwind-icon.png'
-import excelIcon from '../assets/images/excel-icon.png'
+import colabIcon from '../assets/images/colab-icon.png'
 import streamlitIcon from '../assets/images/streamlit-icon.png'
-import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa'
+import { FaGithub, FaInstagram } from 'react-icons/fa'
 
 // Draggable Icon Component with Reorder
 function DraggableIcon({ icon, name, alt, index, onReorder, totalIcons }) {
@@ -24,7 +24,7 @@ function DraggableIcon({ icon, name, alt, index, onReorder, totalIcons }) {
     { left: '75%', top: '80%' },     // Tailwind - bottom right
     { left: '88%', top: '50%' },     // HTML - right middle
     { left: '75%', top: '8%' },      // Streamlit - top right
-    { left: '15%', top: '8%' },      // Excel - top left
+    { left: '15%', top: '8%' },      // Colab - top left
   ]
 
   const position = iconPositions[index]
@@ -124,7 +124,7 @@ function Home() {
     { icon: htmlIcon, name: 'HTML' },
     { icon: cssIcon, name: 'CSS' },
     { icon: tailwindIcon, name: 'Tailwind' },
-    { icon: excelIcon, name: 'Excel' },
+    { icon: colabIcon, name: 'Colab' },
     { icon: streamlitIcon, name: 'Streamlit' },
   ])
 
@@ -206,16 +206,14 @@ function Home() {
             <div className="h-4"></div>
 
             <p className="text-gray-400 text-lg max-w-xl leading-relaxed">
-              Information Systems student with a strong interest in data analysis and data visualization.
-              Experienced in data exploration, sentiment analysis, and creating visualizations using
-              various data analysis tools.
+              Information Systems student with a strong interest in Data Analytics and Business Intelligence. Familiar with data exploration, sentiment analysis, and creating data visualizations for data-driven insights.
             </p>
 
             <div className="h-4"></div>
 
             <div className="flex flex-wrap gap-4 pt-4">
               <a
-                href="#profile"
+                href="#projects"
                 className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-green-500/30"
               >
                 Explore More
@@ -238,11 +236,6 @@ function Home() {
               >
                 <FaGithub size={24} className="text-white" />
               </a>
-              <div
-                className="flex items-center justify-center w-14 h-14 bg-gray-800 hover:bg-blue-600 rounded-full transition-all transform hover:scale-110 cursor-default"
-              >
-                <FaLinkedin size={24} className="text-white" />
-              </div>
               <a
                 href="https://www.instagram.com/isaac.tangiss/"
                 target="_blank"

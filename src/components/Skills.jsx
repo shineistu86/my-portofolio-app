@@ -6,6 +6,7 @@ import mysqlIcon from '../assets/images/mysql-icon.png'
 import rapidIcon from '../assets/images/rapid-icon.png'
 import streamlitIcon from '../assets/images/streamlit-icon.png'
 import lookerIcon from '../assets/images/looker-icon.png'
+import colabIcon from '../assets/images/colab-icon.png'
 import excelIcon from '../assets/images/excel-icon.png'
 import figmaIcon from '../assets/images/figma-icon.png'
 import canvaIcon from '../assets/images/canva-icon.png'
@@ -22,6 +23,7 @@ function Skills() {
     { name: 'Rapid\nMiner', icon: rapidIcon },
     { name: 'Streamlit', icon: streamlitIcon },
     { name: 'Looker\nStudio', icon: lookerIcon },
+    { name: 'Colab', icon: colabIcon },
     { name: 'Excel', icon: excelIcon },
     { name: 'Figma', icon: figmaIcon },
     { name: 'Canva', icon: canvaIcon },
