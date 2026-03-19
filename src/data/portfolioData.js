@@ -36,6 +36,20 @@ export const portfolioData = {
     {
       organization: 'Institut Teknologi Garut',
       position: 'Assistant Lecturer',
+      title: 'Business Statistics',
+      period: 'Feb 2026 – Present',
+      description: 'Assisting students during practical sessions, particularly in data processing and statistical analysis using tools such as SPSS. Supporting understanding of statistical concepts and helping students interpret data for analysis.',
+    },
+    {
+      organization: 'Institut Teknologi Garut',
+      position: 'Assistant Lecturer',
+      title: 'Computer Networks',
+      period: 'Feb 2026 – Present',
+      description: 'Assisting practical sessions by demonstrating network fundamentals, including straight and crossover cable configuration. Supporting the use of Cisco Packet Tracer and MikroTik for basic network simulation and configuration.',
+    },
+    {
+      organization: 'Institut Teknologi Garut',
+      position: 'Assistant Lecturer',
       title: 'Database Concepts',
       period: 'Feb 2025 – Jul 2025',
       description: 'Assisted students in SQL usage for data management, manipulation, and querying. Guided understanding of ERD, relationships, and normalization. Provided technical troubleshooting and feedback.',
