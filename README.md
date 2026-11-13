@@ -1,35 +1,39 @@
 # Hisyam Eka Pramudita - Portfolio
 
-Information Systems student with a strong interest in **data analysis** and **data visualization**. Experienced in data exploration, sentiment analysis, and creating visualizations using various data analysis tools.
+Information Systems student focusing on **data analytics**, **machine learning**, and **business intelligence**. Experienced in geospatial data processing (49,994 land parcel polygons at BAPENDA Kabupaten Garut / SAPADA), K-Means clustering, statistical analysis, and interactive dashboard development.
+
+Live at: **[heps-portofolio.vercel.app](https://heps-portofolio.vercel.app)**
 
 ## 🛠️ Technologies & Skills
 
-### Programming Languages
-- **Python** - Data analysis, sentiment analysis, web scraping
-- **JavaScript** - Web development
-- **SQL** - Database management and querying
+### Data Analytics & Data Science
+- **Python** - Data analysis, geospatial processing, machine learning
+- **Pandas / GeoPandas** - Data wrangling and geospatial data
+- **Scikit-learn** - Clustering (K-Means, K-Medoids), feature engineering
+- **SQL / MySQL / PostgreSQL** - Database management and querying
+- **Matplotlib & Seaborn** - Data visualization
+- **Folium / Leaflet** - Interactive spatial maps
 
-### Data Tools
-- **Pandas** - Data manipulation and analysis
-- **RapidMiner** - Data mining and machine learning
+### BI & Visualization Tools
 - **Power BI** - Data visualization
 - **Looker Studio** - Business intelligence
+- **Streamlit** - Data app development
+- **RapidMiner** - Data mining
 - **Excel** - Data analysis and reporting
-- **Matplotlib** - Data visualization
 
 ### Web Development
 - **React** - Frontend development
 - **Laravel** - Backend development
 - **Tailwind CSS** - Styling
-- **HTML/CSS** - Web structure and design
+- **HTML/CSS/JavaScript** - Web structure and design
 
-### Design Tools
+### System Analysis & Design
 - **Figma** - UI/UX design and prototyping
+- **UML, DFD, BPMN** - System and process modeling
 
 ### Other Tools
-- **Streamlit** - Data app development
-- **MySQL** - Database management
 - **Git & GitHub** - Version control
+- **IBM SPSS Statistics** - Statistical analysis
 
 ## 📦 Installation
 
