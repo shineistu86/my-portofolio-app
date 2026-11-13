@@ -33,7 +33,8 @@ function AvatarR6({ motion }) {
     const speed = motion.current?.speed ?? 0
     const t = state.clock.elapsedTime
     const amp = reduced ? speed * 0.15 : speed * 0.85
-    const swing = Math.sin(t * 9) * amp
+    // Legs & arms swing faster while running
+    const swing = Math.sin(t * (8 + 7 * speed)) * amp
 
     if (leftArm.current) leftArm.current.rotation.x = swing
     if (rightArm.current) rightArm.current.rotation.x = -swing
@@ -41,7 +42,7 @@ function AvatarR6({ motion }) {
     if (rightLeg.current) rightLeg.current.rotation.x = swing
 
     if (rootRef.current && !reduced) {
-      rootRef.current.position.y = Math.abs(Math.sin(t * 9)) * 0.22 * speed
+      rootRef.current.position.y = Math.abs(Math.sin(t * (8 + 7 * speed))) * 0.22 * speed
     }
   })
 

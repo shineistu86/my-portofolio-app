@@ -4,6 +4,8 @@ import { worldRuntime } from './world/worldStore'
 /**
  * Virtual joystick for touch devices — wraps nipplejs,
  * loaded dynamically so desktop users never download it.
+ * Dynamic mode: the joystick spawns wherever the left half of
+ * the screen is touched ("full" joystick, not a fixed pad).
  */
 function Joystick() {
   const zoneRef = useRef(null)
@@ -16,8 +18,7 @@ function Joystick() {
       if (destroyed || !zoneRef.current) return
       joystick = nipplejs.create({
         zone: zoneRef.current,
-        mode: 'static',
-        position: { left: '50%', top: '50%' },
+        mode: 'dynamic',
         color: 'rgba(255, 255, 255, 0.85)',
         size: 110,
       })
@@ -43,7 +44,7 @@ function Joystick() {
   return (
     <div
       ref={zoneRef}
-      className="absolute bottom-6 left-6 w-36 h-36 touch-none"
+      className="absolute bottom-0 left-0 w-1/2 h-3/5 touch-none"
       aria-hidden="true"
     />
   )

@@ -1,13 +1,33 @@
-﻿import { useEffect, useMemo, useRef } from 'react'
+﻿import { Component, Suspense, useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import AvatarR6 from './AvatarR6'
+import RobloxAvatar from './RobloxAvatar'
 import { useKeyboard } from './usePlayerControls'
 import { buildings, WORLD_SIZE, WORLD_MARGIN, PLAYER_RADIUS } from './worldConfig'
-import { worldRuntime } from './worldStore'
+import { worldRuntime, worldAvatar } from './worldStore'
 import { prefersReducedMotion } from './textures'
 
 const WALK_SPEED = 11
+const RUN_SPEED = 19
+const GRAVITY = -60
+const JUMP_VELOCITY = 21
+
+// If the Roblox avatar render fails to load mid-session, fall back to blocky.
+class AvatarBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { failed: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
 
 function dampAngle(current, target, lambda, dt) {
   let diff = (target - current) % (Math.PI * 2)
@@ -18,23 +38,26 @@ function dampAngle(current, target, lambda, dt) {
 
 function Player({ onProximity, onEnter }) {
   const group = useRef()
-  const motion = useRef({ speed: 0 })
+  const motion = useRef({ speed: 0, dirX: 0 })
   const keys = useKeyboard()
   const vel = useRef(new THREE.Vector3())
   const yaw = useRef(Math.PI)
   const lastNear = useRef(null)
+  const jumpY = useRef(0)
+  const jumpVel = useRef(0)
   const reduced = useMemo(() => prefersReducedMotion(), [])
+  const avatar = useMemo(() => worldAvatar.current, [])
 
   const tmp = useMemo(
     () => ({ input: new THREE.Vector3(), target: new THREE.Vector3(), camPos: new THREE.Vector3() }),
     []
   )
 
-  // Enter building with E / Enter
+  // Enter building with E / Enter (ignored while a popup is open)
   useEffect(() => {
     const onKey = (e) => {
-      if ((e.code === 'KeyE' || e.code === 'Enter') && lastNear.current) {
-        onEnter?.(lastNear.current.target)
+      if ((e.code === 'KeyE' || e.code === 'Enter') && lastNear.current && !worldRuntime.paused) {
+        onEnter?.(lastNear.current)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -46,13 +69,18 @@ function Player({ onProximity, onEnter }) {
     if (!group.current) return
     const pos = group.current.position
 
-    // ----- input: keyboard + virtual joystick -----
+    // ----- input: keyboard + virtual joystick (frozen while a popup is open) -----
     const k = keys.current
     let ix = (k.right ? 1 : 0) - (k.left ? 1 : 0)
     let iz = (k.down ? 1 : 0) - (k.up ? 1 : 0)
+    if (worldRuntime.paused) {
+      ix = 0
+      iz = 0
+    }
     const jx = worldRuntime.joy.x
     const jy = worldRuntime.joy.y
-    if (Math.abs(jx) > 0.15 || Math.abs(jy) > 0.15) {
+    const joyMag = Math.hypot(jx, jy)
+    if (!worldRuntime.paused && joyMag > 0.15) {
       ix = jx
       iz = -jy
     }
@@ -61,12 +89,31 @@ function Player({ onProximity, onEnter }) {
     const moving = tmp.input.lengthSq() > 0.01
     if (moving) tmp.input.normalize()
 
+    // ----- run (Shift, or joystick pushed fully) -----
+    const running = moving && (k.run || joyMag > 0.85)
+    const maxSpeed = running ? RUN_SPEED : WALK_SPEED
+
     // ----- velocity with accel/decel -----
-    tmp.target.copy(tmp.input).multiplyScalar(WALK_SPEED)
+    tmp.target.copy(tmp.input).multiplyScalar(maxSpeed)
     vel.current.lerp(tmp.target, Math.min(1, dt * (moving ? 9 : 13)))
 
     pos.x += vel.current.x * dt
     pos.z += vel.current.z * dt
+
+    // ----- jump (Space, or the on-screen jump button) -----
+    if (worldRuntime.jumpQueued) {
+      worldRuntime.jumpQueued = false
+      if (!worldRuntime.paused && jumpY.current <= 0.001) jumpVel.current = JUMP_VELOCITY
+    }
+    if (jumpY.current > 0 || jumpVel.current > 0) {
+      jumpVel.current += GRAVITY * dt
+      jumpY.current += jumpVel.current * dt
+      if (jumpY.current <= 0) {
+        jumpY.current = 0
+        jumpVel.current = 0
+      }
+    }
+    pos.y = jumpY.current
 
     // ----- world bounds -----
     const lim = WORLD_SIZE / 2 - WORLD_MARGIN
@@ -95,7 +142,8 @@ function Player({ onProximity, onEnter }) {
 
     // ----- facing & walk cycle speed -----
     const speed = vel.current.length()
-    motion.current.speed = Math.min(1, speed / WALK_SPEED)
+    motion.current.speed = Math.min(1, speed / RUN_SPEED)
+    motion.current.dirX = vel.current.x
     worldRuntime.speed = motion.current.speed
 
     if (speed > 0.6) {
@@ -132,7 +180,15 @@ function Player({ onProximity, onEnter }) {
 
   return (
     <group ref={group} position={[0, 0, -14]}>
-      <AvatarR6 motion={motion} />
+      {avatar.type === 'roblox' ? (
+        <AvatarBoundary key={avatar.url} fallback={<AvatarR6 motion={motion} />}>
+          <Suspense fallback={null}>
+            <RobloxAvatar motion={motion} src={avatar.url} name={avatar.displayName} />
+          </Suspense>
+        </AvatarBoundary>
+      ) : (
+        <AvatarR6 motion={motion} />
+      )}
       {/* Blob shadow (stays on the ground) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.09, 0]}>
         <circleGeometry args={[2, 20]} />

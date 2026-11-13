@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { worldRuntime } from './worldStore'
 
 const KEY_MAP = {
   KeyW: 'up',
@@ -9,13 +10,16 @@ const KEY_MAP = {
   ArrowLeft: 'left',
   KeyD: 'right',
   ArrowRight: 'right',
+  ShiftLeft: 'run',
+  ShiftRight: 'run',
 }
 
 /**
- * Tracks WASD / arrow key state into a ref (no re-renders per frame).
+ * Tracks WASD / arrow / shift key state into a ref (no re-renders per frame).
+ * Space queues a jump edge-trigger.
  */
 export function useKeyboard() {
-  const keys = useRef({ up: false, down: false, left: false, right: false })
+  const keys = useRef({ up: false, down: false, left: false, right: false, run: false })
 
   useEffect(() => {
     const onDown = (e) => {
@@ -23,6 +27,10 @@ export function useKeyboard() {
       if (k) {
         e.preventDefault()
         keys.current[k] = true
+      }
+      if (e.code === 'Space' && !e.repeat) {
+        e.preventDefault()
+        worldRuntime.jumpQueued = true
       }
     }
     const onUp = (e) => {
@@ -37,6 +45,7 @@ export function useKeyboard() {
       keys.current.down = false
       keys.current.left = false
       keys.current.right = false
+      keys.current.run = false
     }
 
     window.addEventListener('keydown', onDown)

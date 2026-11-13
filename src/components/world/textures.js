@@ -1,15 +1,20 @@
 import * as THREE from 'three'
 
 /** Procedural stud texture for the classic blocky baseplate feel. */
-export function makeStudsTexture(repeat = 70) {
+export function makeStudsTexture(
+  repeat = 70,
+  base = '#5fae48',
+  stud = '#6bbb53',
+  edge = '#4d9739'
+) {
   const size = 64
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
   const ctx = canvas.getContext('2d')
 
-  // Baseplate grey
-  ctx.fillStyle = '#6d7b8f'
+  // Grass green baseplate
+  ctx.fillStyle = base
   ctx.fillRect(0, 0, size, size)
 
   // One stud per tile, centered
@@ -17,10 +22,10 @@ export function makeStudsTexture(repeat = 70) {
   const r = size * 0.28
   ctx.beginPath()
   ctx.arc(cx, cx, r, 0, Math.PI * 2)
-  ctx.fillStyle = '#7d8b9f'
+  ctx.fillStyle = stud
   ctx.fill()
   ctx.lineWidth = 3
-  ctx.strokeStyle = '#5d6b80'
+  ctx.strokeStyle = edge
   ctx.stroke()
 
   // Subtle top-left highlight

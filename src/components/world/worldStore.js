@@ -21,4 +21,15 @@ export const worldRuntime = {
   nearId: null,
   speed: 0,
   joy: { x: 0, y: 0 },
+  jumpQueued: false,
+  paused: false,
+}
+
+// Avatar chosen at the entry screen: { type: 'blocky' }
+// or { type: 'roblox', url, displayName }
+export const worldAvatar = {
+  current: { type: 'blocky' },
+  set(value) {
+    worldAvatar.current = value
+  },
 }
