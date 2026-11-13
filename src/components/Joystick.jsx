@@ -22,10 +22,13 @@ function Joystick() {
         color: 'rgba(255, 255, 255, 0.85)',
         size: 110,
       })
-      joystick.on('move', (_, data) => {
-        worldRuntime.joy.x = data.vector.x
-        // nipplejs y axis points down — invert so up = forward
-        worldRuntime.joy.y = -data.vector.y
+      // nipplejs 1.x calls handlers with a single event object
+      // { type, target, data }, and data.vector has y pointing up.
+      joystick.on('move', (evt) => {
+        const v = evt?.data?.vector
+        if (!v) return
+        worldRuntime.joy.x = v.x
+        worldRuntime.joy.y = v.y
       })
       joystick.on('end', () => {
         worldRuntime.joy.x = 0
