@@ -294,3 +294,83 @@ body {
     clip-path: ellipse(70% 60% at 50% 30%);
   }
 }
+
+/* ----- Home: glossy water sphere & orbiting tech icons ----- */
+@keyframes liquid {
+  0% { border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%; }
+  100% { border-radius: 55% 45% 55% 45% / 45% 55% 45% 55%; }
+}
+
+@keyframes orbitBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.05); }
+}
+
+.animate-liquid {
+  animation: liquid 8s infinite alternate;
+}
+
+.tech-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 12px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(59, 130, 246, 0.5);
+  animation: orbitBounce 2s ease-in-out infinite;
+  transition: box-shadow 0.3s;
+}
+
+.tech-icon:hover {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(59, 130, 246, 0.8);
+  animation-play-state: paused;
+}
+
+.tech-icon img {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+}
+
+@media (max-width: 768px) {
+  .tech-icon {
+    width: 45px;
+    height: 45px;
+    padding: 9px;
+  }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .aurora,
+  .track,
+  .carousel.reverse .track,
+  .animate-liquid,
+  .animate-pulse,
+  .tech-icon,
+  .cursor-glow {
+    animation: none !important;
+  }
+
+  .cursor-glow {
+    display: none;
+  }
+
+  .edu-card,
+  .tech,
+  .edu-card:hover,
+  .tech:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}
