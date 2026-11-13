@@ -4,6 +4,18 @@ Information Systems student focusing on **data analytics**, **machine learning**
 
 Live at: **[heps-portofolio.vercel.app](https://heps-portofolio.vercel.app)**
 
+## 🧱 Blocky World — Interactive 3D Explore Mode
+
+An optional, lazily-loaded 3D map where visitors walk a classic blocky-style avatar
+(built procedurally from primitives — no external assets) between buildings that
+represent each portfolio section. Walk close to a building and press **E**
+(or tap the prompt on mobile) to jump to that section.
+
+- Desktop: **WASD / arrow keys** · **E** enter · **ESC** close
+- Mobile: on-screen virtual joystick (nipplejs, dynamically imported)
+- Powered by `three` + `@react-three/fiber`, code-split so the main portfolio stays light
+- Respects `prefers-reduced-motion`
+
 ## 🛠️ Technologies & Skills
 
 ### Data Analytics & Data Science

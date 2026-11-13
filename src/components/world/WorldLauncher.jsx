@@ -27,6 +27,9 @@ function WorldLauncher() {
 
   useEffect(() => {
     if (!isOpen) return
+    // If the world was opened while an input was focused (e.g. contact form),
+    // release focus so WASD/E typing doesn't leak into the form.
+    document.activeElement?.blur?.()
     const onKey = (e) => {
       if (e.key === 'Escape') worldStore.setOpen(false)
     }
