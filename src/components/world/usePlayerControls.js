@@ -23,6 +23,8 @@ export function useKeyboard() {
 
   useEffect(() => {
     const onDown = (e) => {
+      // While a popup is open, let keys behave normally (Space activates buttons)
+      if (worldRuntime.paused) return
       const k = KEY_MAP[e.code]
       if (k) {
         e.preventDefault()
@@ -35,10 +37,7 @@ export function useKeyboard() {
     }
     const onUp = (e) => {
       const k = KEY_MAP[e.code]
-      if (k) {
-        e.preventDefault()
-        keys.current[k] = false
-      }
+      if (k) keys.current[k] = false
     }
     const onBlur = () => {
       keys.current.up = false

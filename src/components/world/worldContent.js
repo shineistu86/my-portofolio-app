@@ -3,17 +3,17 @@ import { portfolioData } from '../../data/portfolioData'
 const { experience, projects, skills, certifications, awards, social, profile } = portfolioData
 
 /**
- * Concise content shown in the in-world popup when entering a building.
- * Full sections stay on the main portfolio — the popup has a CTA for that.
+ * Short content shown in the popup when entering a building.
+ * Full sections live on the main page; the popup links out to them.
  */
 export const sectionContent = {
   home: {
     title: 'Welcome!',
-    subtitle: `${profile.name} — ${profile.title}`,
+    subtitle: `${profile.name}, ${profile.title}`,
     points: [
       profile.description,
-      `📍 ${profile.location}`,
-      '🚗 Walk around town, enter buildings, and press E (or tap the prompt) to peek inside each section.',
+      `Based in ${profile.location}`,
+      'Walk into any building and press E (or tap Enter) to peek at that section.',
     ],
     links: [
       { label: 'GitHub', url: social.github },
@@ -24,17 +24,17 @@ export const sectionContent = {
     title: 'Education',
     subtitle: portfolioData.education[0]?.institution,
     points: [
-      `${portfolioData.education[0]?.program} · ${portfolioData.education[0]?.year}`,
+      `${portfolioData.education[0]?.program} (${portfolioData.education[0]?.year})`,
       'Relevant coursework:',
-      ...portfolioData.coursework.slice(0, 7).map((c) => `• ${c}`),
+      ...portfolioData.coursework.slice(0, 7),
     ],
   },
   experience: {
     title: 'Experience',
-    subtitle: 'Internships, teaching, projects & organizations',
+    subtitle: 'Internships, teaching, projects and organizations',
     points: experience
       .slice(0, 6)
-      .map((e) => `• ${e.title} — ${e.organization} (${e.period})`),
+      .map((e) => `${e.title}, ${e.organization} (${e.period})`),
   },
   skills: {
     title: 'Skills',
@@ -48,26 +48,26 @@ export const sectionContent = {
   },
   projects: {
     title: 'Projects',
-    subtitle: `${projects.length} projects — data, web & design`,
+    subtitle: `${projects.length} projects: data, web and design`,
     points: projects
       .slice(0, 6)
-      .map(
-        (p) =>
-          `• ${p.name}${p.featured ? ' ⭐' : ''} — ${p.technologies.slice(0, 3).join(', ')}`
-      ),
+      .map((p) => {
+        const tech = p.technologies.slice(0, 3).join(', ')
+        return `${p.name}${p.featured ? ' (featured)' : ''}: ${tech}`
+      }),
   },
   achievements: {
     title: 'Certifications & Awards',
     subtitle: 'Milestones and recognitions',
     points: [
-      ...certifications.map((c) => `🎓 ${c.name} — ${c.issuer} (${c.year})`),
-      ...awards.map((a) => `🏆 ${a.title} — ${a.detail} (${a.year})`),
+      ...certifications.map((c) => `Certification: ${c.name}, ${c.issuer} (${c.year})`),
+      ...awards.map((a) => `Award: ${a.title}, ${a.detail} (${a.year})`),
     ],
   },
   contact: {
     title: 'Contact',
     subtitle: 'Reach out for collaborations or opportunities',
-    points: [`✉️ ${profile.email}`],
+    points: [`Email: ${profile.email}`],
     links: [
       { label: 'GitHub', url: social.github },
       { label: 'LinkedIn', url: social.linkedin },

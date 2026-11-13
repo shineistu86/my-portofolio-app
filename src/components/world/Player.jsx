@@ -1,8 +1,7 @@
-﻿import { Component, Suspense, useEffect, useMemo, useRef } from 'react'
+﻿import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import AvatarR6 from './AvatarR6'
-import RobloxAvatar from './RobloxAvatar'
 import { useKeyboard } from './usePlayerControls'
 import { buildings, WORLD_SIZE, WORLD_MARGIN, PLAYER_RADIUS } from './worldConfig'
 import { worldRuntime, worldAvatar } from './worldStore'
@@ -12,22 +11,6 @@ const WALK_SPEED = 11
 const RUN_SPEED = 19
 const GRAVITY = -60
 const JUMP_VELOCITY = 21
-
-// If the Roblox avatar render fails to load mid-session, fall back to blocky.
-class AvatarBoundary extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { failed: false }
-  }
-
-  static getDerivedStateFromError() {
-    return { failed: true }
-  }
-
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children
-  }
-}
 
 function dampAngle(current, target, lambda, dt) {
   let diff = (target - current) % (Math.PI * 2)
@@ -181,11 +164,7 @@ function Player({ onProximity, onEnter }) {
   return (
     <group ref={group} position={[0, 0, -14]}>
       {avatar.type === 'roblox' ? (
-        <AvatarBoundary key={avatar.url} fallback={<AvatarR6 motion={motion} />}>
-          <Suspense fallback={null}>
-            <RobloxAvatar motion={motion} src={avatar.url} name={avatar.displayName} />
-          </Suspense>
-        </AvatarBoundary>
+        <AvatarR6 motion={motion} name={avatar.displayName} colors={avatar.colors} />
       ) : (
         <AvatarR6 motion={motion} />
       )}

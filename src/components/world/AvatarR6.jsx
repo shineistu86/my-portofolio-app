@@ -1,33 +1,41 @@
 ﻿import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { makeFaceTexture, prefersReducedMotion } from './textures'
+import { makeFaceTexture, makeLabelTexture, prefersReducedMotion } from './textures'
 
-const YELLOW = '#f5cd30'
-const BLUE = '#0d69ac'
-const GREEN = '#4b974b'
+const DEFAULT_COLORS = { head: '#f5cd30', torso: '#0d69ac', arms: '#f5cd30', legs: '#4b974b' }
 
 /**
  * Procedural blocky avatar (classic 6-part rig proportions):
  * head + torso + 2 arms + 2 legs, built from box primitives only.
- * `motion` is a shared ref: { speed: 0..1 } driving the walk cycle.
+ * `colors` recolors the rig (sampled from a Roblox avatar render),
+ * `name` adds a floating name tag. `motion` is a shared ref: { speed }.
  */
-function AvatarR6({ motion }) {
+function AvatarR6({ motion, name, colors = {} }) {
   const rootRef = useRef()
   const leftArm = useRef()
   const rightArm = useRef()
   const leftLeg = useRef()
   const rightLeg = useRef()
 
+  const headColor = colors.head ?? DEFAULT_COLORS.head
+  const torsoColor = colors.torso ?? DEFAULT_COLORS.torso
+  const armsColor = colors.arms ?? DEFAULT_COLORS.arms
+  const legsColor = colors.legs ?? DEFAULT_COLORS.legs
+
   const face = useMemo(() => makeFaceTexture(), [])
   const reduced = useMemo(() => prefersReducedMotion(), [])
+  const nameTag = useMemo(
+    () => (name ? makeLabelTexture(name, '#111827', '#ffffff', '#38bdf8') : null),
+    [name]
+  )
 
   const headMaterials = useMemo(() => {
-    const plain = new THREE.MeshLambertMaterial({ color: YELLOW })
+    const plain = new THREE.MeshLambertMaterial({ color: headColor })
     const front = new THREE.MeshLambertMaterial({ map: face })
     // material order: +x, -x, +y, -y, +z (front), -z
     return [plain, plain, plain, plain, front, plain]
-  }, [face])
+  }, [face, headColor])
 
   useFrame((state) => {
     const speed = motion.current?.speed ?? 0
@@ -51,7 +59,7 @@ function AvatarR6({ motion }) {
       {/* Torso */}
       <mesh position={[0, 3, 0]}>
         <boxGeometry args={[2, 2, 1]} />
-        <meshLambertMaterial color={BLUE} />
+        <meshLambertMaterial color={torsoColor} />
       </mesh>
 
       {/* Head with smiley face on the front */}
@@ -59,33 +67,40 @@ function AvatarR6({ motion }) {
         <boxGeometry args={[1.4, 1.4, 1.4]} />
       </mesh>
 
-      {/* Arms â€” pivot at the shoulder */}
+      {/* Arms, pivot at the shoulder */}
       <group ref={leftArm} position={[-1.5, 3.95, 0]}>
         <mesh position={[0, -1, 0]}>
           <boxGeometry args={[1, 2, 1]} />
-          <meshLambertMaterial color={YELLOW} />
+          <meshLambertMaterial color={armsColor} />
         </mesh>
       </group>
       <group ref={rightArm} position={[1.5, 3.95, 0]}>
         <mesh position={[0, -1, 0]}>
           <boxGeometry args={[1, 2, 1]} />
-          <meshLambertMaterial color={YELLOW} />
+          <meshLambertMaterial color={armsColor} />
         </mesh>
       </group>
 
-      {/* Legs â€” pivot at the hip */}
+      {/* Legs, pivot at the hip */}
       <group ref={leftLeg} position={[-0.5, 2, 0]}>
         <mesh position={[0, -1, 0]}>
           <boxGeometry args={[1, 2, 1]} />
-          <meshLambertMaterial color={GREEN} />
+          <meshLambertMaterial color={legsColor} />
         </mesh>
       </group>
       <group ref={rightLeg} position={[0.5, 2, 0]}>
         <mesh position={[0, -1, 0]}>
           <boxGeometry args={[1, 2, 1]} />
-          <meshLambertMaterial color={GREEN} />
+          <meshLambertMaterial color={legsColor} />
         </mesh>
       </group>
+
+      {/* Floating name tag (always faces the camera) */}
+      {nameTag && (
+        <sprite position={[0, 6.9, 0]} scale={[9, 2.25, 1]}>
+          <spriteMaterial map={nameTag} />
+        </sprite>
+      )}
     </group>
   )
 }

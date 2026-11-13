@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { buildings, trees, flowers, bushes, clouds, WORLD_SIZE } from './worldConfig'
@@ -64,52 +64,65 @@ function Building({ b }) {
   )
 }
 
-function Tree({ x, z, s = 1 }) {
-  return (
-    <group position={[x, 0, z]} scale={s}>
-      <mesh position={[0, 2, 0]}>
-        <boxGeometry args={[1.6, 4, 1.6]} />
-        <meshLambertMaterial color="#8b5a2b" />
-      </mesh>
-      <mesh position={[0, 6.5, 0]}>
-        <boxGeometry args={[5, 4, 5]} />
-        <meshLambertMaterial color="#3f9e4f" />
-      </mesh>
-      <mesh position={[0, 9.5, 0]}>
-        <boxGeometry args={[3, 2.4, 3]} />
-        <meshLambertMaterial color="#4fb862" />
-      </mesh>
-    </group>
+// All trees, bushes and flowers share one InstancedMesh (one draw call),
+// which keeps mobile GPUs happy. Each instance is a unit box scaled per part.
+function Decorations() {
+  const ref = useRef()
+  const tmp = useMemo(
+    () => ({
+      m: new THREE.Matrix4(),
+      q: new THREE.Quaternion(),
+      p: new THREE.Vector3(),
+      s: new THREE.Vector3(),
+      c: new THREE.Color(),
+    }),
+    []
   )
-}
 
-function Flower({ x, z, color }) {
-  return (
-    <group position={[x, 0, z]}>
-      <mesh position={[0, 0.5, 0]}>
-        <boxGeometry args={[0.24, 1, 0.24]} />
-        <meshLambertMaterial color="#3e8f34" />
-      </mesh>
-      <mesh position={[0, 1.15, 0]}>
-        <boxGeometry args={[0.7, 0.5, 0.7]} />
-        <meshLambertMaterial color={color} />
-      </mesh>
-    </group>
-  )
-}
+  const instances = useMemo(() => {
+    const list = []
+    const push = (x, y, z, sx, sy, sz, color) => list.push({ x, y, z, sx, sy, sz, color })
+    for (const t of trees) {
+      const s = t.s ?? 1
+      push(t.x, 2 * s, t.z, 1.6 * s, 4 * s, 1.6 * s, '#8b5a2b')
+      push(t.x, 6.5 * s, t.z, 5 * s, 4 * s, 5 * s, '#3f9e4f')
+      push(t.x, 9.5 * s, t.z, 3 * s, 2.4 * s, 3 * s, '#4fb862')
+    }
+    for (const b of bushes) {
+      const s = b.s ?? 1
+      push(b.x, 0.64 * s, b.z, 2 * s, 1.28 * s, 2 * s, '#3c8f3c')
+      push(b.x + 0.7 * s, 1.04 * s, b.z + 0.4 * s, 1.1 * s, 0.8 * s, 1.1 * s, '#4aa54a')
+    }
+    for (const f of flowers) {
+      push(f.x, 0.5, f.z, 0.24, 1, 0.24, '#3e8f34')
+      push(f.x, 1.15, f.z, 0.7, 0.5, 0.7, f.color)
+    }
+    return list
+  }, [])
 
-function Bush({ x, z, s = 1 }) {
+  useLayoutEffect(() => {
+    const mesh = ref.current
+    if (!mesh) return
+    instances.forEach((it, i) => {
+      tmp.p.set(it.x, it.y, it.z)
+      tmp.s.set(it.sx, it.sy, it.sz)
+      tmp.m.compose(tmp.p, tmp.q, tmp.s)
+      mesh.setMatrixAt(i, tmp.m)
+      mesh.setColorAt(i, tmp.c.set(it.color))
+    })
+    mesh.instanceMatrix.needsUpdate = true
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
+  }, [instances, tmp])
+
   return (
-    <group position={[x, 0, z]} scale={[s, s * 0.8, s]}>
-      <mesh position={[0, 0.8, 0]}>
-        <boxGeometry args={[2, 1.6, 2]} />
-        <meshLambertMaterial color="#3c8f3c" />
-      </mesh>
-      <mesh position={[0.7, 1.3, 0.4]}>
-        <boxGeometry args={[1.1, 1, 1.1]} />
-        <meshLambertMaterial color="#4aa54a" />
-      </mesh>
-    </group>
+    <instancedMesh
+      ref={ref}
+      args={[undefined, undefined, instances.length]}
+      frustumCulled={false}
+    >
+      <boxGeometry args={[1, 1, 1]} />
+      <meshLambertMaterial />
+    </instancedMesh>
   )
 }
 
@@ -190,15 +203,7 @@ function WorldMap() {
       {buildings.map((b) => (
         <Building key={b.id} b={b} />
       ))}
-      {trees.map((t) => (
-        <Tree key={`${t.x}-${t.z}`} x={t.x} z={t.z} s={t.s} />
-      ))}
-      {bushes.map((b) => (
-        <Bush key={`${b.x}-${b.z}`} x={b.x} z={b.z} s={b.s} />
-      ))}
-      {flowers.map((f) => (
-        <Flower key={`${f.x}-${f.z}`} x={f.x} z={f.z} color={f.color} />
-      ))}
+      <Decorations />
 
       {/* Drifting blocky clouds */}
       <Clouds />

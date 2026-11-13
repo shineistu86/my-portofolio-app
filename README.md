@@ -6,13 +6,17 @@ Live at: **[heps-portofolio.vercel.app](https://heps-portofolio.vercel.app)**
 
 ## 🧱 Blocky World — Interactive 3D Explore Mode
 
-An optional, lazily-loaded 3D map where visitors walk a classic blocky-style avatar
-(built procedurally from primitives — no external assets) between buildings that
-represent each portfolio section. Walk close to a building and press **E**
-(or tap the prompt on mobile) to jump to that section.
+An optional, lazily-loaded 3D map where visitors walk a blocky avatar between buildings
+that represent each portfolio section. Entering a building opens a popup with a short
+summary right inside the world; a button jumps to the full section on the page.
 
-- Desktop: **WASD / arrow keys** · **E** enter · **ESC** close
-- Mobile: on-screen virtual joystick (nipplejs, dynamically imported)
+- Pick a character first: your Roblox username (the 3D rig recolors itself by sampling
+  your public avatar render via `/api/roblox-avatar`, a serverless function) or the
+  classic blocky guest
+- Desktop: **WASD / arrows** · **Shift** run · **Space** jump · **E** enter · **ESC** close
+- Mobile: full-screen virtual joystick (nipplejs, dynamically imported) + jump button
+- Grass town with scattered trees, bushes, flowers and drifting blocky clouds
+  (decorations are instanced: one draw call)
 - Powered by `three` + `@react-three/fiber`, code-split so the main portfolio stays light
 - Respects `prefers-reduced-motion`
 

@@ -6,6 +6,67 @@ import Joystick from '../Joystick'
 
 const BlockyWorld = lazy(() => import('./BlockyWorld'))
 
+const DEFAULT_COLORS = { head: '#f5cd30', torso: '#0d69ac', arms: '#f5cd30', legs: '#4b974b' }
+
+/**
+ * Reads the avatar render (proxied same-origin, so the canvas stays clean)
+ * and averages opaque pixels per body region to recolor the 3D rig.
+ * Returns null if anything fails; callers fall back to default colors.
+ */
+function sampleAvatarColors(url) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      try {
+        const S = 96
+        const canvas = document.createElement('canvas')
+        canvas.width = S
+        canvas.height = S
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })
+        ctx.drawImage(img, 0, 0, S, S)
+        const px = ctx.getImageData(0, 0, S, S).data
+        const avg = (rects) => {
+          let r = 0
+          let g = 0
+          let b = 0
+          let n = 0
+          for (const [x0, x1, y0, y1] of rects) {
+            for (let y = Math.floor(y0 * S); y < Math.ceil(y1 * S); y++) {
+              for (let x = Math.floor(x0 * S); x < Math.ceil(x1 * S); x++) {
+                const i = (y * S + x) * 4
+                if (px[i + 3] > 128) {
+                  r += px[i]
+                  g += px[i + 1]
+                  b += px[i + 2]
+                  n++
+                }
+              }
+            }
+          }
+          if (!n) return null
+          const hex = (v) => Math.round(v / n).toString(16).padStart(2, '0')
+          return `#${hex(r)}${hex(g)}${hex(b)}`
+        }
+        const arms =
+          avg([
+            [0.08, 0.34, 0.38, 0.62],
+            [0.66, 0.92, 0.38, 0.62],
+          ]) ?? DEFAULT_COLORS.arms
+        resolve({
+          head: avg([[0.35, 0.65, 0.04, 0.24]]) ?? DEFAULT_COLORS.head,
+          torso: avg([[0.38, 0.62, 0.38, 0.62]]) ?? DEFAULT_COLORS.torso,
+          arms,
+          legs: avg([[0.34, 0.66, 0.7, 0.97]]) ?? DEFAULT_COLORS.legs,
+        })
+      } catch {
+        resolve(null)
+      }
+    }
+    img.onerror = () => resolve(null)
+    img.src = url
+  })
+}
+
 /** Entry screen: play with your Roblox avatar or as the classic blocky guest. */
 function EntryDialog({ onPlay }) {
   const [username, setUsername] = useState('')
@@ -21,7 +82,7 @@ function EntryDialog({ onPlay }) {
     e.preventDefault()
     const name = username.trim()
     if (!/^[A-Za-z0-9_]{3,20}$/.test(name)) {
-      setError('Roblox usernames are 3–20 characters (letters, numbers, underscore).')
+      setError('Roblox usernames are 3 to 20 characters: letters, numbers, underscore.')
       return
     }
     setLoading(true)
@@ -30,14 +91,19 @@ function EntryDialog({ onPlay }) {
       const res = await fetch(`/api/roblox-avatar?username=${encodeURIComponent(name)}`)
       if (!res.ok) throw new Error(res.status === 404 ? 'not_found' : 'fetch_failed')
       const data = await res.json()
-      worldAvatar.set({ type: 'roblox', url: data.avatarUrl, displayName: data.displayName })
+      const colors = await sampleAvatarColors(data.avatarUrl)
+      worldAvatar.set({
+        type: 'roblox',
+        displayName: data.displayName,
+        colors: colors ?? {},
+      })
       onPlay()
     } catch (err) {
       setLoading(false)
       setError(
         err.message === 'not_found'
           ? `Roblox user "${name}" was not found. Check the spelling or play as Blocky.`
-          : 'Could not load the Roblox avatar. Try again or play as Blocky.'
+          : 'Could not reach the avatar API. Try again or play as Blocky.'
       )
     }
   }
@@ -45,7 +111,7 @@ function EntryDialog({ onPlay }) {
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-b from-[#0b0f19] via-[#101a2e] to-[#0b0f19] p-4">
       <div
-        className="w-full max-w-md bg-gray-900/90 backdrop-blur border border-gray-700 rounded-2xl p-6 sm:p-8 shadow-2xl"
+        className="w-full max-w-md bg-gray-900/95 border border-gray-700 rounded-2xl p-6 sm:p-8 shadow-2xl"
         role="dialog"
         aria-modal="true"
         aria-label="Choose your character"
@@ -56,13 +122,14 @@ function EntryDialog({ onPlay }) {
           </span>
           <div>
             <h2 className="font-bold text-white text-lg leading-tight">Enter HEP&apos;S PORTO</h2>
-            <p className="text-gray-400 text-sm">Blocky World — pick your character</p>
+            <p className="text-gray-400 text-sm">Pick your character</p>
           </div>
         </div>
 
         <p className="text-gray-300 text-sm mt-4 mb-5">
-          Walk around a blocky town where every building is a section of this portfolio. Enter your
-          Roblox username to roam it as your own avatar — or jump in as the classic blocky guest.
+          Every building in this blocky town is a section of the portfolio. Type your Roblox
+          username and you will walk around as a 3D character wearing your avatar&apos;s colors, or
+          continue as the classic blocky guest.
         </p>
 
         <form onSubmit={submit} className="mb-4">
@@ -78,12 +145,13 @@ function EntryDialog({ onPlay }) {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. shineistu86"
+              placeholder="e.g. builderman"
               autoComplete="off"
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
               maxLength={20}
+              enterKeyHint="go"
               disabled={loading}
               className="flex-1 min-w-0 bg-gray-800 border border-gray-600 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-60"
             />
@@ -95,7 +163,7 @@ function EntryDialog({ onPlay }) {
               {loading ? (
                 <>
                   <FaSpinner className="animate-spin" aria-hidden="true" />
-                  <span className="hidden sm:inline">Loading…</span>
+                  <span className="hidden sm:inline">Loading</span>
                 </>
               ) : (
                 'Play'
@@ -121,8 +189,7 @@ function EntryDialog({ onPlay }) {
         </button>
 
         <p className="text-gray-500 text-xs mt-4 text-center">
-          Avatar renders are fetched through this site&apos;s API. Offline? The blocky guest always
-          works.
+          Character colors are read from your public Roblox avatar render.
         </p>
       </div>
     </div>
@@ -135,7 +202,9 @@ function WorldLauncher() {
   const [near, setNear] = useState(null)
   const [popup, setPopup] = useState(null)
   const [isTouch] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+    () =>
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0)
   )
 
   useEffect(
@@ -209,10 +278,11 @@ function WorldLauncher() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-[#0b0f19]"
+      className="fixed inset-0 z-[100] bg-[#0b0f19] overscroll-none touch-manipulation"
       role="dialog"
       aria-modal="true"
       aria-label="Explore the HEP'S PORTO map"
+      onContextMenu={(e) => e.preventDefault()}
     >
       {!entered && <EntryDialog onPlay={enterWorld} />}
 
@@ -224,7 +294,7 @@ function WorldLauncher() {
                 className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 animate-pulse"
                 aria-hidden="true"
               ></div>
-              <p className="text-gray-300 font-medium">Loading HEP&apos;S PORTO world…</p>
+              <p className="text-gray-300 font-medium">Loading HEP&apos;S PORTO world</p>
             </div>
           }
         >
@@ -232,12 +302,15 @@ function WorldLauncher() {
         </Suspense>
       )}
 
+      {/* Touch joystick zone first, so every control below it stays tappable */}
+      {entered && isTouch && <Joystick />}
+
       {/* Top bar */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 pointer-events-none">
         <div className="pointer-events-auto flex items-center gap-2.5 bg-gray-900/85 backdrop-blur px-4 py-2.5 rounded-xl border border-gray-700 shadow-lg">
           <FaGamepad className="text-cyan-400" aria-hidden="true" />
           <span className="font-bold text-white tracking-wide">HEP&apos;S PORTO</span>
-          <span className="text-gray-400 text-sm hidden sm:inline">— Blocky World</span>
+          <span className="text-gray-400 text-sm hidden sm:inline">· Blocky World</span>
         </div>
         <button
           onClick={() => worldStore.setOpen(false)}
@@ -253,57 +326,56 @@ function WorldLauncher() {
       {entered && !isTouch && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900/85 backdrop-blur px-5 py-2.5 rounded-full border border-gray-700 text-gray-300 text-sm pointer-events-none">
           <kbd className="px-1.5 py-0.5 bg-gray-700 rounded text-white">W A S D</kbd> walk
-          <span className="mx-2 text-gray-600">•</span>
+          <span className="mx-2 text-gray-600">·</span>
           <kbd className="px-1.5 py-0.5 bg-gray-700 rounded text-white">Shift</kbd> run
-          <span className="mx-2 text-gray-600">•</span>
+          <span className="mx-2 text-gray-600">·</span>
           <kbd className="px-1.5 py-0.5 bg-gray-700 rounded text-white">Space</kbd> jump
-          <span className="mx-2 text-gray-600">•</span>
+          <span className="mx-2 text-gray-600">·</span>
           <kbd className="px-1.5 py-0.5 bg-gray-700 rounded text-white">E</kbd> enter building
-          <span className="mx-2 text-gray-600">•</span>
+          <span className="mx-2 text-gray-600">·</span>
           <kbd className="px-1.5 py-0.5 bg-gray-700 rounded text-white">ESC</kbd> close
         </div>
       )}
 
       {/* Enter building prompt */}
       {entered && near && !popup && (
-        <div className="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2 animate-bounce z-10">
           {isTouch ? (
             <button
               onClick={() => enterBuilding(near)}
               className="px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold shadow-lg shadow-cyan-500/40 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200"
             >
-              Enter — {near.label}
+              Enter {near.label}
             </button>
           ) : (
             <div className="px-6 py-3 rounded-full bg-gray-900/90 backdrop-blur border border-cyan-500/60 text-white font-medium shadow-lg pointer-events-none">
-              Press <kbd className="px-1.5 py-0.5 mx-1 bg-cyan-500 text-gray-900 rounded text-sm font-bold">E</kbd> to enter — {near.label}
+              Press <kbd className="px-1.5 py-0.5 mx-1 bg-cyan-500 text-gray-900 rounded text-sm font-bold">E</kbd> to enter {near.label}
             </div>
           )}
         </div>
       )}
 
-      {/* Mobile: full-screen joystick zone + jump button */}
-      {entered && isTouch && <Joystick />}
+      {/* Mobile jump button */}
       {entered && isTouch && (
         <button
           onPointerDown={jump}
           onContextMenu={(e) => e.preventDefault()}
           aria-label="Jump"
-          className="absolute bottom-10 right-6 w-20 h-20 rounded-full bg-cyan-500/90 hover:bg-cyan-400 active:scale-95 text-gray-900 text-xl font-bold shadow-lg shadow-cyan-500/40 border-4 border-white/30 flex flex-col items-center justify-center gap-0.5 touch-none select-none transition-transform"
+          className="absolute bottom-10 right-6 w-20 h-20 rounded-full bg-cyan-500/90 hover:bg-cyan-400 active:scale-95 text-gray-900 shadow-lg shadow-cyan-500/40 border-4 border-white/30 flex flex-col items-center justify-center gap-0.5 touch-none select-none transition-transform"
         >
           <FaArrowUp aria-hidden="true" />
-          <span className="text-[10px] tracking-widest uppercase">Jump</span>
+          <span className="text-[10px] tracking-widest uppercase font-bold">Jump</span>
         </button>
       )}
 
-      {/* Section popup — stay inside the world */}
+      {/* Section popup, stays inside the world */}
       {entered && popup && content && (
         <div
-          className="absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/70"
           onClick={() => setPopup(null)}
         >
           <div
-            className="relative w-full max-w-lg max-h-[82%] overflow-y-auto bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
+            className="relative w-full max-w-lg max-h-[82%] overflow-y-auto overscroll-contain bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-label={`${popup.label} section`}
@@ -332,12 +404,14 @@ function WorldLauncher() {
             </div>
 
             <div className="px-6 py-4">
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {content.points.map((p, i) => (
-                  <li key={i} className="text-gray-300 text-sm leading-relaxed flex gap-2">
-                    <span className="text-cyan-400 shrink-0" aria-hidden="true">
-                      ▪
-                    </span>
+                  <li key={i} className="text-gray-300 text-sm leading-relaxed flex gap-2.5">
+                    <span
+                      className="mt-[7px] w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ backgroundColor: popup.color }}
+                      aria-hidden="true"
+                    ></span>
                     <span>{p}</span>
                   </li>
                 ))}
