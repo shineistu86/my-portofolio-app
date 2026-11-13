@@ -10,6 +10,7 @@ import Footer from './components/Footer'
 import CursorGlow from './components/CursorGlow'
 import AuroraBg from './components/AuroraBg'
 import ScrollToTop from './components/ScrollToTop'
+import WorldLauncher from './components/world/WorldLauncher'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       </main>
       <Footer />
       <ScrollToTop />
+      <WorldLauncher />
     </div>
   )
 }

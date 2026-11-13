@@ -8,7 +8,8 @@ import cssIcon from '../assets/images/css-icon.png'
 import tailwindIcon from '../assets/images/tailwind-icon.png'
 import colabIcon from '../assets/images/colab-icon.png'
 import streamlitIcon from '../assets/images/streamlit-icon.png'
-import { FaGithub, FaInstagram } from 'react-icons/fa'
+import { FaGithub, FaInstagram, FaGamepad } from 'react-icons/fa'
+import { worldStore } from './world/worldStore'
 
 const orbitIcons = [
   { icon: cssIcon, name: 'CSS', position: { left: '5%', top: '50%' } },
@@ -101,8 +102,20 @@ function Home() {
               </a>
             </div>
 
+            {/* Explore map CTA */}
+            <div className="pt-4">
+              <button
+                onClick={() => worldStore.setOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-cyan-500/50 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500 hover:text-gray-900 font-medium transition-all transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300"
+                aria-label="Explore the interactive 3D map of this portfolio"
+              >
+                <FaGamepad size={16} aria-hidden="true" />
+                Explore HEP&apos;S PORTO Map
+              </button>
+            </div>
+
             {/* Social Links */}
-            <div className="flex gap-4 pt-6">
+            <div className="flex gap-4 pt-4">
               <a
                 href={portfolioData.social.github}
                 target="_blank"

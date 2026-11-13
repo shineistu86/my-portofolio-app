@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { FaBars, FaTimes, FaGamepad } from 'react-icons/fa'
+import { worldStore } from './world/worldStore'
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -26,7 +27,7 @@ function Navbar() {
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -36,6 +37,14 @@ function Navbar() {
                 {link.name}
               </a>
             ))}
+            <button
+              onClick={() => worldStore.setOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/60 text-cyan-300 hover:bg-cyan-500 hover:text-gray-900 transition-colors font-medium text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400"
+              aria-label="Explore the interactive 3D map"
+            >
+              <FaGamepad size={14} aria-hidden="true" />
+              Explore
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -65,6 +74,17 @@ function Navbar() {
                 {link.name}
               </a>
             ))}
+            <button
+              onClick={() => {
+                setIsMenuOpen(false)
+                worldStore.setOpen(true)
+              }}
+              className="w-full mt-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border border-cyan-500/60 text-cyan-300 hover:bg-cyan-500 hover:text-gray-900 transition-colors font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400"
+              aria-label="Explore the interactive 3D map"
+            >
+              <FaGamepad size={14} aria-hidden="true" />
+              Explore Map
+            </button>
           </div>
         </div>
       )}
